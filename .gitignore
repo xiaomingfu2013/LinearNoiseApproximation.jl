@@ -1,2 +1,7 @@
-/Manifest.toml
+*.jl.*.cov
+*.jl.cov
+*.jl.mem
 /docs/build/
+.vscode/settings.json
+Manifest.toml
+test/Manifest.toml
