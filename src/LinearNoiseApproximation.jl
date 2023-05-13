@@ -8,5 +8,5 @@ import DiffEqBase: ODEProblem
 include("lna_expand.jl")
 include("utils.jl")
 
-export LNASystem
+export LNASystem, expand_initial_conditions
 end

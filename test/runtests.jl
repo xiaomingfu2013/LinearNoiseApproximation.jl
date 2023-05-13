@@ -2,5 +2,9 @@ using LinearNoiseApproximation
 using Test
 
 @testset "LinearNoiseApproximation.jl" begin
-    # Write your tests here.
+    @info "Testing a simple reaction network"
+    include("test_example.jl")
+
+    @info "Testing the initial condition expansion"
+    include("test_initial_condition.jl")
 end
