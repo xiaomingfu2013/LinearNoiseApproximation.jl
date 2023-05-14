@@ -51,9 +51,9 @@ end
 
 function construct_Σ(N::Int)
     @variables t
-    Σ = Matrix{Any}(undef, N, N)
+    Σ = Matrix{Num}(undef, N, N)
     for j in 1:N, i in 1:j
-        Σ[i,j] =  to_timedependent_symbol(:Σ, [i, j])
+        Σ[i,j] = to_timedependent_symbol(:Σ, [i, j])
     end
     for j in 1:N, i in j+1:N
         Σ[i,j] = Σ[j,i]
@@ -92,6 +92,8 @@ function get_replacemap_rates(rn, rates::Vector{Pair{Num,T}}) where {T<:Real}
     Dict(symmap_to_varmap(rn, rates))
 end
 
-function DiffEqBase.ODEProblem(expsys::LNASystem, args...; kwargs...)
-    DiffEqBase.ODEProblem(getfield(expsys,:odesys), args...; kwargs...)
+function DiffEqBase.ODEProblem(expsys::LNASystem, u0, args...; kwargs...)
+    @assert length(u0) == numspecies(expsys.rn) "the length of u0 must be equal to the number of species in the ReactionSystem"
+    u0_expanded = expand_initial_conditions(expsys, u0)
+    DiffEqBase.ODEProblem(getfield(expsys,:odesys), u0_expanded, args...; kwargs...)
 end
