@@ -98,7 +98,7 @@ as the Jacobian matrix of the deterministic rate equations, and
 In this formulation, the LNA allows for analytical solutions that are locally valid close to macroscopic trajectories (solution of the rate equations) of the system. We refer to the review paper [[2]](#2) for more details on the CME and LNA.
 
 ## References
-<a id="1">[1]</a> N.G. van Kampen. The Expansion of the Master Equation. John Wiley & Sons, Inc., 2007. 
+<a id="1">[1]</a> Nicolaas Godfried van Kampen. The Expansion of the Master Equation. John Wiley & Sons, Inc., 2007. 
 
 <a id="2">[2]</a> David Schnoerr, Guido Sanguinetti, and Ramon Grima. Approximation and inference methods for stochastic biochemical kinetics — a tutorial review (2017). Journal of Physics A: Mathematical and Theoretical, 50(9):093001.
 
