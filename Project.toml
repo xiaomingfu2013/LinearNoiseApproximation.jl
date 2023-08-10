@@ -11,7 +11,11 @@ Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 Symbolics = "0c5d862f-8b57-4792-8d23-62f2024744c7"
 
 [compat]
-Catalyst = "13"
+Catalyst = "13.0"
+DiffEqBase = "6.122"
+ModelingToolkit = "6.3, 7.0, 8.0"
+Reexport = "0.2, 1.0"
+Symbolics = "5.0"
 julia = "1.9"
 
 [extras]
