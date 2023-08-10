@@ -99,6 +99,7 @@ In this formulation, the LNA allows for analytical solutions that are locally va
 
 ## References
 <a id="1">[1]</a> N.G. van Kampen. The Expansion of the Master Equation. John Wiley & Sons, Inc., 2007. 
-<a id="2">[2]</a> David Schnoerr, Guido Sanguinetti, and Ramon Grima. Approximation and inference methods for stochastic
-biochemical kinetics — a tutorial review Corrigendum : Approximation and inference methods for stochastic biochemical kinetics — a tutorial review ( 2017 J . Phys . A :. 2017.
+
+<a id="2">[2]</a> David Schnoerr, Guido Sanguinetti, and Ramon Grima. Approximation and inference methods for stochastic biochemical kinetics — a tutorial review (2017). Journal of Physics A: Mathematical and Theoretical, 50(9):093001.
+
 <a id="3">[3]</a> Nicolaas Godfried van Kampen. Stochastic Processes in Physics and Chemistry, volume 1. Elsevier, 1992.
