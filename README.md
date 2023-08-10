@@ -43,9 +43,7 @@ sol = solve(prob,Vern7(),abstol=1e-7, saveat =1.0)
 Linear noise approximation (LNA) is a moment-based approximation method for stochastic chemical kinetics [[1]](#1). A general chemical kinetics reaction can be described as follows: given a set of chemical species $X_{i}, i = 1, \ldots, N$, we define $R$ chemical reactions by the notation
 ```math
 \begin{equation}
-    \begin{aligned}
         k_r:\sum_{i=1}^{N}s_{ir}X_{i} \rightarrow \sum_{i=1}^{N}s'_{ir}X_{i}, \tag{1}
-    \end{aligned}
 \end{equation}
 ```
 where the stoichiometric coefficients $s_{ir}$ and $s'_{ir}$ are non-negative integer numbers denoting the numbers of reactant and product molecules, respectively. The quantity $k_r$ in Equation (1) is called the reaction rate constant of the $r$th reaction. Classically, the dynamics of a chemical reaction system as in Equation (1) is modelled by the law of mass action. The law of mass action states that the rate of a reaction is proportional to the product of the concentrations of reactant molecules, which lead to the following rate equations as:
@@ -92,7 +90,10 @@ where $\mathbf{A}=\mathbf{A}(\boldsymbol{\phi}),\, \mathbf{B}=\mathbf{B}(\boldsy
 ```math
  \mathbf{A} = \left(A_{ij}\right)_{N\times N}, A_{ij}=\sum_{r=1}^{R} S_{ir}\partial_{\phi_j}g_r(\boldsymbol{\phi}),
 ```
-as the Jacobian matrix of the deterministic rate equations, and $\mathbf{B} =\left(B_{ij}\right)_{N\times N}, B_{ij} = \sum_{r=1}^{R} S_{ir}S_{jr}g_r(\boldsymbol{\phi})$.
+as the Jacobian matrix of the deterministic rate equations, and 
+```math
+\mathbf{B} =\left(B_{ij}\right)_{N\times N}, B_{ij} = \sum_{r=1}^{R} S_{ir}S_{jr}g_r(\boldsymbol{\phi}).
+```
 
 In this formulation, the LNA allows for analytical solutions that are locally valid close to macroscopic trajectories (solution of the rate equations) of the system. We refer to the review paper [[2]](#2) for more details on the CME and LNA.
 
