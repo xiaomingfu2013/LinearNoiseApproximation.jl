@@ -6,7 +6,14 @@ function expand_initial_conditions(sys::LNASystem, u0)
 end
 numspecies(expsys::LNASystem) = length(states(expsys.odesys))
 species(expsys::LNASystem) = states(expsys.odesys)
-to_timedependent_symbol(symbol::Symbol, vec::Vector) =(@variables t; Num(Symbolics.variable(symbol, join(vec); T = ModelingToolkit.FnType{Tuple{Any},Real}))(t))
+function to_timedependent_symbol(symbol::Symbol, vec::Vector)
+    @variables t
+    return Num(
+        Symbolics.variable(symbol, join(vec); T=ModelingToolkit.FnType{Tuple{Any},Real})
+    )(
+        t
+    )
+end
 
 function find_states_cov_number(num::Int, lna_sys::LNASystem)
     symb = to_timedependent_symbol(:Σ, [num, num])

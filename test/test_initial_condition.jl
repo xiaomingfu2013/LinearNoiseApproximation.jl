@@ -10,7 +10,6 @@ rn = @reaction_network model1 begin
     b, 3 * A + 2 * B --> 5 * B
 end
 
-
 u0 = [1.0, 1.0]
 expsys = LNASystem(rn)
 @test length(LNA.expand_initial_conditions(expsys, u0)) == 5
