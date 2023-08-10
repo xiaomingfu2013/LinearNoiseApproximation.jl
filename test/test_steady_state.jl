@@ -1,7 +1,7 @@
 using Test
 using LinearNoiseApproximation
-using Catalyst, OrdinaryDiffEq
-using Symbolics, LinearAlgebra
+using OrdinaryDiffEq
+using LinearAlgebra
 const LNA = LinearNoiseApproximation
 
 rn = @reaction_network TwoStage begin

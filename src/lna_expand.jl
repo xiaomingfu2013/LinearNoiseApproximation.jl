@@ -1,5 +1,4 @@
 struct LNASystem{Ktype}
-    Ω::Real # system size
     rn::ReactionSystem
     odesys::ODESystem
     kwargs::Ktype
@@ -22,22 +21,12 @@ function get_symbolic_matrix(rn::ReactionSystem; kwargs...)
     return A_symbol, BB_symbol
 end
 
-function LNASystem(
-    rn::ReactionSystem, Ω::SystemSize; combinatoric_ratelaws=false, kwargs...
-) where {SystemSize<:Real}
-    LNA = _get_LNA_system(rn, Ω; combinatoric_ratelaws=combinatoric_ratelaws, kwargs...)
-    return LNA
-end
-
 function LNASystem(rn::ReactionSystem; combinatoric_ratelaws=false, kwargs...)
-    if !(:Ω ∈ toexpr(parameters(rn)))
-        @info "the system size Ω is not defined as a parameter in the Reaction system, then use the default Ω = 1"
-    end
-    LNA = _get_LNA_system(rn, 1; combinatoric_ratelaws=combinatoric_ratelaws, kwargs...)
+    LNA = _get_LNA_system(rn; combinatoric_ratelaws=combinatoric_ratelaws, kwargs...)
     return LNA
 end
 
-function _get_LNA_system(rn, Ω; kwargs...)
+function _get_LNA_system(rn; kwargs...)
     ratesys = convert(ODESystem, rn; kwargs...)
 
     N = numspecies(rn)
@@ -55,7 +44,7 @@ function _get_LNA_system(rn, Ω; kwargs...)
     @named LNA = ODESystem(
         connected_eqs, t, [states(ratesys); unique(Σ)], parameters(ratesys)
     )
-    return LNASystem(Ω, rn, LNA, kwargs)
+    return LNASystem(rn, LNA, kwargs)
 end
 
 function construct_Σ(N::Int)

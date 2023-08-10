@@ -26,7 +26,7 @@ rn = @reaction_network TwoStage begin
     d1, P --> ∅
 end
 ```
-When the system size `Ω` is integrated in the system (propensities), then you can simply obtain the LNA system by calling
+Here the system size `Ω` is integrated in the system (propensities), you can simply obtain the LNA system by calling
 ```julia
 LNAsys = LNASystem(rn)
 ```
@@ -37,46 +37,30 @@ rates = [v0=>4.0,v1=>10.0,d0=>1.0,d1=>1.0,Ω=>5.0]
 tspan = (0.0, 20.0)
 u0 =[0, 0] # initial condition for M and P
 prob = ODEProblem(LNAsys, u0, tspan, rates)
-sol = solve(prob,Vern7(),abstol=1e-7, saveat =1.)
-```
-Please note that system size Ω is the default symbol, other types of symbols are not supported.
-### Reaction network without system size Ω
-```julia
-rn = @reaction_network TwoStage begin
-    @parameters  v0 v1 d0 d1
-    @species M(t) P(t)
-    v0, ∅ --> M
-    v1, M --> M + P
-    d0, M --> ∅
-    d1, P --> ∅
-end
-```
-Then please specify the system size by
-```julia
-LNAsys = ExpandedSystem(rn, Ω = 5., order = 0)
+sol = solve(prob,Vern7(),abstol=1e-7, saveat =1.0)
 ```
 ## Brief introduction to linear noise approximation
 Linear noise approximation (LNA) is a moment-based approximation method for stochastic chemical kinetics [[1]](#1). A general chemical kinetics reaction can be described as follows: given a set of chemical species $X_{i}, i = 1, \ldots, N$, we define $R$ chemical reactions by the notation
 ```math
 \begin{equation}
     \begin{aligned}
-        k_r:\sum_{i=1}^{N}s_{ir}X_{i} \rightarrow \sum_{i=1}^{N}s'_{ir}X_{i},
+        k_r:\sum_{i=1}^{N}s_{ir}X_{i} \rightarrow \sum_{i=1}^{N}s'_{ir}X_{i}, \tag{1}
     \end{aligned}
 \end{equation}
 ```
 where the stoichiometric coefficients $s_{ir}$ and $s'_{ir}$ are non-negative integer numbers denoting the numbers of reactant and product molecules, respectively. The quantity $k_r$ in Equation (1) is called the reaction rate constant of the $r$th reaction. Classically, the dynamics of a chemical reaction system as in Equation (1) is modelled by the law of mass action. The law of mass action states that the rate of a reaction is proportional to the product of the concentrations of reactant molecules, which lead to the following rate equations as:
 ```math
 \begin{equation}
-    \frac{\mathrm{d}}{\mathrm{dt}} \phi_i = \sum_{r=1}^{R} S_{ir} g_r(\boldsymbol{\phi}),
+    \frac{\mathrm{d}}{\mathrm{dt}} \phi_i = \sum_{r=1}^{R} S_{ir} g_r(\boldsymbol{\phi}), \tag{2}
 \end{equation}
 ```
 where $\phi_i$ is the concentration of species $X_i$, 
 ```math
-\boldsymbol{S} = \{S_{ir}\}_{N\times R},\; S_{ir}=s'_{ir} - s_{ir},\; i=1,\ldots,N,\; r=1,\ldots,R
+\boldsymbol{S} = \{S_{ir}\}_{N\times R},\; S_{ir}=s'_{ir} - s_{ir},\; i=1,\ldots,N,\; r=1,\ldots,R \notag
 ```
 is the stoichiometric matrix, and 
 ```math
-g_r(\boldsymbol{\phi}) = k_r \prod_{i=1}^{N} \phi_i^{s_{ir}},
+g_r(\boldsymbol{\phi}) = k_r \prod_{i=1}^{N} \phi_i^{s_{ir}}, 
 ```
 is the rate of the $r$th reaction. 
 
@@ -84,7 +68,7 @@ However, the law of mass action is only valid when the number of molecules is la
 ```math
 \begin{equation}
     \begin{aligned}
-        \frac{\mathrm{d}}{\mathrm{dt}} P(\boldsymbol{n}, t) = \sum_{r=1}^{R} f_r(\boldsymbol{n} - \mathbf{S}_r, t) P(\boldsymbol{n} - \mathbf{S}_r, t) - \sum_{r=1}^{R} f_r(\boldsymbol{n}, t) P(\boldsymbol{n}, t),
+        \frac{\mathrm{d}}{\mathrm{dt}} P(\boldsymbol{n}, t) = \sum_{r=1}^{R} f_r(\boldsymbol{n} - \mathbf{S}_r, t) P(\boldsymbol{n} - \mathbf{S}_r, t) - \sum_{r=1}^{R} f_r(\boldsymbol{n}, t) P(\boldsymbol{n}, t), \notag
     \end{aligned}
 \end{equation}
 ```
@@ -101,7 +85,7 @@ The chemical master equation is written directly from the rate constants and sto
 where $\phi_i$ is the solution of the deterministic rate equations (2), and $\epsilon_i$ represents fluctuations about the deterministic mean. Define $\boldsymbol{\Sigma}=\left(\epsilon_{ij}\right)_{N\times N}$ to be the covariance matrix of the fluctuations, the linear noise approximation is given by:
 ```math
 \begin{equation}
-    \partial_t \boldsymbol{\Sigma} = \mathbf{A} \boldsymbol{\Sigma} + \boldsymbol{\Sigma} \mathbf{A}^T +  \Omega^{-1} \mathbf{B},
+    \partial_t \boldsymbol{\Sigma} = \mathbf{A} \boldsymbol{\Sigma} + \boldsymbol{\Sigma} \mathbf{A}^T +  \Omega^{-1} \mathbf{B}, \tag{3}
 \end{equation}
 ```
 where $\mathbf{A}=\mathbf{A}(\boldsymbol{\phi}),\, \mathbf{B}=\mathbf{B}(\boldsymbol{\phi})$ both depend on the solution $\boldsymbol{\phi}$ of the rate equation \eqref{eq:rate_equations}, which are defined by 
