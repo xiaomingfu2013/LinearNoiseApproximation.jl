@@ -9,7 +9,7 @@ using Pkg
 Pkg.add("LinearNoiseApproximation")
 using LinearNoiseApproximation
 ```
-This package provides a numerical method of linear noise approximation (LNA) with a given reaction system using [Catalyst](https://github.com/SciML/Catalyst.jl). The derived expanded system can be solved using [DifferentialEquations.jl](https://github.com/JuliaDiffEq/DifferentialEquations.jl).
+This package provides a numerical method of applying linear noise approximation (LNA) to a given reaction system using [Catalyst](https://github.com/SciML/Catalyst.jl). The derived expanded system can be solved using [DifferentialEquations.jl](https://github.com/JuliaDiffEq/DifferentialEquations.jl).
 
 ## Usage
 ### Reaction network with system size Ω
