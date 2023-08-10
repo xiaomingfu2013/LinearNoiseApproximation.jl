@@ -71,9 +71,13 @@ where the stoichiometric coefficients $s_{ir}$ and $s'_{ir}$ are non-negative in
 \end{equation}
 ```
 where $\phi_i$ is the concentration of species $X_i$, 
-\[\boldsymbol{S} = \{S_{ir}\}_{N\times R},\; S_{ir}=s'_{ir} - s_{ir},\; i=1,\ldots,N,\; r=1,\ldots,R\]
+```math
+\boldsymbol{S} = \{S_{ir}\}_{N\times R},\; S_{ir}=s'_{ir} - s_{ir},\; i=1,\ldots,N,\; r=1,\ldots,R
+```
 is the stoichiometric matrix, and 
-\[g_r(\boldsymbol{\phi}) = k_r \prod_{i=1}^{N} \phi_i^{s_{ir}}, \]
+```math
+g_r(\boldsymbol{\phi}) = k_r \prod_{i=1}^{N} \phi_i^{s_{ir}},
+```
 is the rate of the $r$th reaction. 
 
 However, the law of mass action is only valid when the number of molecules is large. When the number of molecules is small, System (1) can instead be modelled by a continuous-time Markov jump process to study the probability of the system being in a particular state at a given time. The dynamics of such a system can be described by the chemical master equation (CME) [[2]](#2):
@@ -85,11 +89,15 @@ However, the law of mass action is only valid when the number of molecules is la
 \end{equation}
 ```
 where $P(\boldsymbol{n}, t)$ is the probability of the system being in state $\boldsymbol{n}$ at time $t$, 
-\[f_r(\boldsymbol{n}, t) = k_r\Omega \prod_{i=1}^{N} \frac{n_i!}{(n_i-s_{ir})!\Omega^{s_{ir}}} \]
+```math
+f_r(\boldsymbol{n}, t) = k_r\Omega \prod_{i=1}^{N} \frac{n_i!}{(n_i-s_{ir})!\Omega^{s_{ir}}} 
+```
 is the propensity function of reaction $r$ at state $\boldsymbol{n}$, and $\mathbf{S}_r$ is the stoichiometric vector of reaction $r$, $\Omega$ is the system size (or volume of the system).
 
 The chemical master equation is written directly from the rate constants and stoichiometries of all the elementary reactions of a chemical system, but neither analytical nor numerical solutions are in general available. Fortunately, the chemical master equation can often be simplified in a linear noise approximation. Linear noise approximation is an expansion of the CME taking the inverse system size $1/\Omega$ as the perturbed variable, which is originally developed by [[3]](#3). The idea is to separate concentrations into a deterministic part, given by the solution of the deterministic rate equations, and a part describing the fluctuations about the deterministic mean
-\[\frac{n_i}{\Omega} = \phi_i  + \Omega^{-1/2} \epsilon_i, \]
+```math
+\frac{n_i}{\Omega} = \phi_i  + \Omega^{-1/2} \epsilon_i,
+```
 where $\phi_i$ is the solution of the deterministic rate equations (2), and $\epsilon_i$ represents fluctuations about the deterministic mean. Define $\boldsymbol{\Sigma}=\left(\epsilon_{ij}\right)_{N\times N}$ to be the covariance matrix of the fluctuations, the linear noise approximation is given by:
 ```math
 \begin{equation}
@@ -97,7 +105,9 @@ where $\phi_i$ is the solution of the deterministic rate equations (2), and $\ep
 \end{equation}
 ```
 where $\mathbf{A}=\mathbf{A}(\boldsymbol{\phi}),\, \mathbf{B}=\mathbf{B}(\boldsymbol{\phi})$ both depend on the solution $\boldsymbol{\phi}$ of the rate equation \eqref{eq:rate_equations}, which are defined by 
-\[ \mathbf{A} = \left(A_{ij}\right)_{N\times N}, A_{ij}=\sum_{r=1}^{R} S_{ir}\partial_{\phi_j}g_r(\boldsymbol{\phi}),\]
+```math
+ \mathbf{A} = \left(A_{ij}\right)_{N\times N}, A_{ij}=\sum_{r=1}^{R} S_{ir}\partial_{\phi_j}g_r(\boldsymbol{\phi}),
+```
 as the Jacobian matrix of the deterministic rate equations, and $\mathbf{B} =\left(B_{ij}\right)_{N\times N}, B_{ij} = \sum_{r=1}^{R} S_{ir}S_{jr}g_r(\boldsymbol{\phi})$.
 
 In this formulation, the LNA allows for analytical solutions that are locally valid close to macroscopic trajectories (solution of the rate equations) of the system. We refer to the review paper [[2]](#2) for more details on the CME and LNA.
