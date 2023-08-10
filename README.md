@@ -60,7 +60,7 @@ is the stoichiometric matrix, and
 ```math
 g_r(\boldsymbol{\phi}) = k_r \prod_{i=1}^{N} \phi_i^{s_{ir}}, 
 ```
-is the rate of the $r$th reaction. 
+is the rate of the $r$-th reaction. 
 
 However, the law of mass action is only valid when the number of molecules is large. When the number of molecules is small, System (1) can instead be modelled by a continuous-time Markov jump process to study the probability of the system being in a particular state at a given time. The dynamics of such a system can be described by the chemical master equation (CME) [[2]](#2):
 ```math
