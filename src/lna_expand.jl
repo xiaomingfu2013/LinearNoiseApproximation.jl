@@ -31,9 +31,9 @@ end
 
 function LNASystem(rn::ReactionSystem; combinatoric_ratelaws=false, kwargs...)
     if !(:Ω ∈ toexpr(parameters(rn)))
-        @warn "the system size Ω is not defined as a parameter in the Reaction system, then use the default Ω = 1"
+        @info "the system size Ω is not defined as a parameter in the Reaction system, then use the default Ω = 1"
     end
-    LNA = _get_LNA_system(rn, 1.0; combinatoric_ratelaws=combinatoric_ratelaws, kwargs...)
+    LNA = _get_LNA_system(rn, 1; combinatoric_ratelaws=combinatoric_ratelaws, kwargs...)
     return LNA
 end
 
