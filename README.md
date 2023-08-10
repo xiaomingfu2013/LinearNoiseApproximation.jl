@@ -46,7 +46,7 @@ Linear noise approximation (LNA) is a moment-based approximation method for stoc
         k_r:\sum_{i=1}^{N}s_{ir}X_{i} \rightarrow \sum_{i=1}^{N}s'_{ir}X_{i}, \tag{1}
 \end{equation}
 ```
-where the stoichiometric coefficients $s_{ir}$ and $s'_{ir}$ are non-negative integer numbers denoting the numbers of reactant and product molecules, respectively. The quantity $k_r$ in Equation (1) is called the reaction rate constant of the $r$th reaction. Classically, the dynamics of a chemical reaction system as in Equation (1) is modelled by the law of mass action. The law of mass action states that the rate of a reaction is proportional to the product of the concentrations of reactant molecules, which lead to the following rate equations as:
+where the stoichiometric coefficients $s_{ir}$ and $s'_{ir}$ are non-negative integer numbers denoting the numbers of reactant and product molecules, respectively. The quantity $k_r$ in Equation (1) is called the reaction rate constant of the $r$-th reaction. Classically, the dynamics of a chemical reaction system as in Equation (1) is modelled by the law of mass action. The law of mass action states that the rate of a reaction is proportional to the product of the concentrations of reactant molecules, which lead to the following rate equations as:
 ```math
 \begin{equation}
     \frac{\mathrm{d}}{\mathrm{dt}} \phi_i = \sum_{r=1}^{R} S_{ir} g_r(\boldsymbol{\phi}), \tag{2}
