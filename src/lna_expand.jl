@@ -15,7 +15,8 @@ function get_symbolic_matrix(rn::ReactionSystem; kwargs...)
     A_symbol = S * Symbolics.jacobian(jrl, sps)
     BB_symbol = Num.(zeros(length(sps), length(sps)))
     # because the matrix is symmetric, we only need to calculate the upper triangle, and we only use the upper triangle
-    for j in 1:length(sps), i in 1:j
+    N = length(sps)
+    for i in 1:N, j in i:N
         BB_symbol[i, j] = sum(S[i, k] * jrl[k] * S[j, k] for k in eachindex(jrl))
     end
     return A_symbol, BB_symbol
@@ -36,7 +37,7 @@ function _get_LNA_system(rn; kwargs...)
     A = A_symbol * Σ
     PartialΣ = A + transpose(A) + BB_symbol
     cov_eqs = Equation[]
-    for j in 1:N, i in 1:j
+    for i in 1:N, j in i:N
         push!(cov_eqs, Differential(t)(Σ[i, j]) ~ PartialΣ[i, j])
     end
     connected_eqs = [equations(ratesys); cov_eqs]
