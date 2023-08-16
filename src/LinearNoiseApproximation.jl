@@ -1,6 +1,6 @@
 module LinearNoiseApproximation
 using Reexport
-using Symbolics, ModelingToolkit, Catalyst
+using ModelingToolkit, Catalyst
 import Catalyst: numspecies
 using DiffEqBase
 import DiffEqBase: ODEProblem

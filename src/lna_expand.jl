@@ -12,7 +12,7 @@ function get_symbolic_matrix(rn::ReactionSystem; kwargs...)
     sps = Catalyst.species(rn)
     S = Catalyst.netstoichmat(rn)
     jrl = get_ode_propensity(rn; kwargs...)
-    A_symbol = S * Symbolics.jacobian(jrl, sps)
+    A_symbol = S * ModelingToolkit.jacobian(jrl, sps)
     BB_symbol = Num.(zeros(length(sps), length(sps)))
     # because the matrix is symmetric, we only need to calculate the upper triangle, and we only use the upper triangle
     N = length(sps)

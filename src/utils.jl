@@ -9,7 +9,7 @@ species(expsys::LNASystem) = states(expsys.odesys)
 function to_timedependent_symbol(symbol::Symbol, vec::Vector)
     @variables t
     return Num(
-        Symbolics.variable(symbol, join(vec); T=ModelingToolkit.FnType{Tuple{Any},Real})
+        ModelingToolkit.variable(symbol, join(vec); T=ModelingToolkit.FnType{Tuple{Any},Real})
     )(
         t
     )
