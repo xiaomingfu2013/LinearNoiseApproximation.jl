@@ -54,7 +54,7 @@ function construct_Σ(N::Int)
     for j in 1:N, i in 1:j
         Σ[i, j] = to_timedependent_symbol(:Σ, [i, j])
     end
-    for j in 1:N, i in (j + 1):N
+    for j in 1:N, i in (j+1):N
         Σ[i, j] = Σ[j, i]
     end
     return Σ
