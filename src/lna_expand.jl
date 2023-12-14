@@ -43,7 +43,7 @@ function _get_LNA_system(rn; kwargs...)
     connected_eqs = [equations(ratesys); cov_eqs]
 
     @named LNA = ODESystem(
-        connected_eqs, t, [states(ratesys); unique(Σ)], parameters(ratesys)
+        connected_eqs, t, [states(ratesys); unique(Σ)], parameters(ratesys); kwargs...
     )
     return LNASystem(rn, LNA, kwargs)
 end
