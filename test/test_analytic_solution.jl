@@ -7,9 +7,8 @@ function sir_lna_model!(du, u, p, t)
     du[1] = -β * S * I / N0
     du[2] = β * S * I / N0 - γ * I
     du[3] = β * S * I / N0 - 2 * β * I * ϵ11 / N0 - 2 * β * S * ϵ12 / N0
-    du[4] =
-        -β * S * I / N0 + (-γ + β * S / N0 - β * I / N0) * ϵ12 + β * I * ϵ11 / N0 -
-        β * S * ϵ22 / N0
+    du[4] = -β * S * I / N0 + (-γ + β * S / N0 - β * I / N0) * ϵ12 + β * I * ϵ11 / N0 -
+            β * S * ϵ22 / N0
     du[5] = γ * I + β * S * I / N0 + 2 * (β * S / N0 - γ) * ϵ22 + 2 * β * I * ϵ12 / N0
     return nothing
 end

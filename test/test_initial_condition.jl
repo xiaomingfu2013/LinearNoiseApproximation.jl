@@ -12,4 +12,4 @@ end
 
 u0 = [1.0, 1.0]
 expsys = LNASystem(rn)
-@test length(LNA.expand_initial_conditions(expsys, u0)) == 5
+@test length(expand_initial_conditions(expsys, u0)) == 5
