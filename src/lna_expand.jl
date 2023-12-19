@@ -8,10 +8,10 @@ function get_ode_propensity(rn::ReactionSystem; combinatoric_ratelaws=false)
     return oderatelaw.(reactions(rn); combinatoric_ratelaw=combinatoric_ratelaws)
 end
 
-function get_symbolic_matrix(rn::ReactionSystem; kwargs...)
+function get_symbolic_matrix(rn::ReactionSystem; combinatoric_ratelaws=false)
     sps = Catalyst.species(rn)
     S = Catalyst.netstoichmat(rn)
-    jrl = get_ode_propensity(rn; kwargs...)
+    jrl = get_ode_propensity(rn; combinatoric_ratelaws=combinatoric_ratelaws)
     A_symbol = S * ModelingToolkit.jacobian(jrl, sps)
     BB_symbol = Num.(zeros(length(sps), length(sps)))
     # because the matrix is symmetric, we only need to calculate the upper triangle, and we only use the upper triangle
@@ -27,13 +27,13 @@ function LNASystem(rn::ReactionSystem; combinatoric_ratelaws=false, kwargs...)
     return LNA
 end
 
-function _get_LNA_system(rn; kwargs...)
+function _get_LNA_system(rn; combinatoric_ratelaws=false, name=:LNA, kwargs...)
     ratesys = convert(ODESystem, rn; kwargs...)
 
     N = numspecies(rn)
     Σ = construct_Σ(N)
     @variables t
-    A_symbol, BB_symbol = get_symbolic_matrix(rn; kwargs...)
+    A_symbol, BB_symbol = get_symbolic_matrix(rn; combinatoric_ratelaws=combinatoric_ratelaws)
     A = A_symbol * Σ
     PartialΣ = A + transpose(A) + BB_symbol
     cov_eqs = Equation[]
@@ -42,8 +42,8 @@ function _get_LNA_system(rn; kwargs...)
     end
     connected_eqs = [equations(ratesys); cov_eqs]
 
-    @named LNA = ODESystem(
-        connected_eqs, t, [states(ratesys); unique(Σ)], parameters(ratesys); kwargs...
+    LNA = ODESystem(
+        connected_eqs, t, [states(ratesys); unique(Σ)], parameters(ratesys); name=name, kwargs...
     )
     return LNASystem(rn, LNA, kwargs)
 end
