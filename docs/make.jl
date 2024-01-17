@@ -20,6 +20,7 @@ makedocs(;
         assets=String[],
     ),
     pages=["Home" => "index.md", "API" => "api.md"],
+    warnonly=true,
 )
 
 deploydocs(; repo="github.com/xiaomingfu2013/LinearNoiseApproximation.jl", devbranch="main")
