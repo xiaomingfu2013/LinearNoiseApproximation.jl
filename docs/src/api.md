@@ -1,7 +1,7 @@
 # Main API
 
 ```@meta
-CurrentModule = DelaySSAToolkit
+CurrentModule = LinearNoiseApproximation
 ```
 
 ## Types
