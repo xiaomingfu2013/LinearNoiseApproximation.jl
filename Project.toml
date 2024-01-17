@@ -14,7 +14,7 @@ Catalyst = "13.0"
 DiffEqBase = "6.122"
 ModelingToolkit = "6.3, 7.0, 8.0"
 Reexport = "0.2, 1.0"
-julia = "1.9"
+julia = "1.10"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

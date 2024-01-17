@@ -1,13 +1,35 @@
+"""
+A type that contains the information of the LNA system.
+
+# Fields
+- `rn::ReactionSystem`: a reaction network that is used to construct the LNA system, which is from `Catalyst.jl`
+- `odesys::ODESystem`: the linear noise approximation system, it is a `ODESystem` that extends the `ReactionSystem` by adding the covariance terms
+- `kwargs::Any`: Optional keyword arguments
+"""
 struct LNASystem{Ktype}
     rn::ReactionSystem
     odesys::ODESystem
     kwargs::Ktype
 end
 
+"""
+Function to obtain the ODEs according to the rate equations
+
+# Arguments
+- `rn::ReactionSystem`: a reaction network that is used to construct the LNA system, which is from `Catalyst.jl`
+- `combinatoric_ratelaws::Bool`: (Optional) whether to use the combinatoric rate laws, default is `false`
+"""
 function get_ode_propensity(rn::ReactionSystem; combinatoric_ratelaws=false)
     return oderatelaw.(reactions(rn); combinatoric_ratelaw=combinatoric_ratelaws)
 end
 
+"""
+Function to obtain the symbolic matrix of the LNA system
+
+# Arguments
+- `rn::ReactionSystem`: a reaction network that is used to construct the LNA system, which is from `Catalyst.jl`
+- `combinatoric_ratelaws::Bool`: (Optional) whether to use the combinatoric rate laws, default is `false`
+"""
 function get_symbolic_matrix(rn::ReactionSystem; combinatoric_ratelaws=false)
     sps = Catalyst.species(rn)
     S = Catalyst.netstoichmat(rn)
@@ -22,6 +44,13 @@ function get_symbolic_matrix(rn::ReactionSystem; combinatoric_ratelaws=false)
     return A_symbol, BB_symbol
 end
 
+"""
+Function to automatically obtain the LNA system from a reaction network
+
+# Arguments
+- `rn::ReactionSystem`: a reaction network that is used to construct the LNA system, which is from `Catalyst.jl`
+- `combinatoric_ratelaws::Bool`: (Optional) whether to use the combinatoric rate laws, default is `false`
+"""
 function LNASystem(rn::ReactionSystem; combinatoric_ratelaws=false, kwargs...)
     LNA = _get_LNA_system(rn; combinatoric_ratelaws=combinatoric_ratelaws, kwargs...)
     return LNA
@@ -60,9 +89,6 @@ function construct_Σ(N::Int)
     return Σ
 end
 
-"""
-    function get_val_matrix_at_equilirium(rn::ReactionSystem, rates, equilibrium::Vector{T}) where {T<:Real}
-"""
 function get_val_matrix_at_equilirium(
     rn::ReactionSystem, rates, equilibrium::Vector{T}
 ) where {T<:Real}

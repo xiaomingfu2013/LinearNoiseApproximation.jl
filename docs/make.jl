@@ -11,15 +11,15 @@ DocMeta.setdocmeta!(
 makedocs(;
     modules=[LinearNoiseApproximation],
     authors="Xiaoming Fu",
-    repo="https://github.com/palmtree2013/LinearNoiseApproximation.jl/blob/{commit}{path}#{line}",
+    repo="https://github.com/xiaomingfu2013/LinearNoiseApproximation.jl/blob/{commit}{path}#{line}",
     sitename="LinearNoiseApproximation.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://palmtree2013.github.io/LinearNoiseApproximation.jl",
+        canonical="https://xiaomingfu2013.github.io/LinearNoiseApproximation.jl",
         edit_link="main",
         assets=String[],
     ),
-    pages=["Home" => "index.md"],
+    pages=["Home" => "index.md", "API" => "api.md"],
 )
 
-deploydocs(; repo="github.com/palmtree2013/LinearNoiseApproximation.jl", devbranch="main")
+deploydocs(; repo="github.com/xiaomingfu2013/LinearNoiseApproximation.jl", devbranch="main")
