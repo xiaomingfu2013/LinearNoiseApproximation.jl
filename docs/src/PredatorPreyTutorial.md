@@ -1,5 +1,5 @@
 ```@meta
-EditURL = "../../examples/predator_prey_tutorial.jl"
+EditURL = "../../examples/PredatorPreyTutorial.jl"
 ```
 
 # Tutorial: Using LinearNoiseApproximation.jl to solve a Lotka-Volterra model
@@ -7,7 +7,7 @@ EditURL = "../../examples/predator_prey_tutorial.jl"
 This example demonstrates how to use `LinearNoiseApproximation.jl` package to solve a Lotka-Volterra model using the Linear Noise Approximation (LNA) and compare it to the stochastic
 trajectories obtained using the Gillespie algorithm.
 
-````@example predator_prey_tutorial
+````@example PredatorPreyTutorial
 using LinearNoiseApproximation
 using DifferentialEquations
 using Catalyst
@@ -27,7 +27,7 @@ The corresponding ODE system reads
 \end{equation}
 ```
 
-````@example predator_prey_tutorial
+````@example PredatorPreyTutorial
 rn = @reaction_network begin
     @parameters α β δ
     @species U(t) V(t)
@@ -40,7 +40,7 @@ end
 ## Convert the model to a JumpSystem for the Gillespie algorithm
 Using `Catalyst.jl` we can convert `ReactionSystem` to a `JumpSystem` which can be used to simulate the stochastic trajectories using the Gillespie algorithm.
 
-````@example predator_prey_tutorial
+````@example PredatorPreyTutorial
 jumpsys = convert(JumpSystem, rn)
 
 #define the initial conditions, parameters, and time span
