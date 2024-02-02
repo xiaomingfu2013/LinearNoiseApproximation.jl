@@ -1,5 +1,5 @@
 ```@meta
-EditURL = "../../examples/predator_prey_fig.jl"
+EditURL = "../../examples/predator_prey_tutorial.jl"
 ```
 
 # Tutorial: Using LinearNoiseApproximation.jl to solve a Lotka-Volterra model
@@ -7,7 +7,7 @@ EditURL = "../../examples/predator_prey_fig.jl"
 This example demonstrates how to use `LinearNoiseApproximation.jl` package to solve a Lotka-Volterra model using the Linear Noise Approximation (LNA) and compare it to the stochastic
 trajectories obtained using the Gillespie algorithm.
 
-````@example predator_prey_fig
+````@example predator_prey_tutorial
 using LinearNoiseApproximation
 using DifferentialEquations
 using Catalyst
@@ -18,14 +18,16 @@ using Plots
 ## Define the Lotka-Volterra model
 The Lotka-Volterra model describes the dynamics of predator-prey interactions in an ecosystem. It assumes that the prey population $U$ grows at a rate represented by the parameter $\alpha$ in the absence of predators, but decreases as they are consumed by the predator population $V$ at a rate determined by the interaction strength parameter, $\beta$. The predator population decreases in size if they cannot find enough prey to consume, which is represented by the mortality rate parameter, $\delta$.
 The corresponding ODE system reads
+```math
 \begin{equation}
 	\begin{aligned}
 		\frac{\mathrm{d}U}{\mathrm{d} t} & = \alpha U - \beta U V,\\
 		\frac{\mathrm{d}V}{\mathrm{d} t} & = \beta U V  - \delta V,
 	\end{aligned}\quad t\in (0, t_{\text{end}}).
 \end{equation}
+```
 
-````@example predator_prey_fig
+````@example predator_prey_tutorial
 rn = @reaction_network begin
     @parameters α β δ
     @species U(t) V(t)
@@ -38,7 +40,7 @@ end
 ## Convert the model to a JumpSystem for the Gillespie algorithm
 Using `Catalyst.jl` we can convert `ReactionSystem` to a `JumpSystem` which can be used to simulate the stochastic trajectories using the Gillespie algorithm.
 
-````@example predator_prey_fig
+````@example predator_prey_tutorial
 jumpsys = convert(JumpSystem, rn)
 
 #define the initial conditions, parameters, and time span
@@ -100,6 +102,9 @@ for (i, (mean_idx, var_idx)) in enumerate(zip(mean_idxs, var_idxs))
 end
 plt
 ````
+
+save the plot
+Plots.savefig(plt, "predator_prey_fig.png")
 
 ---
 
