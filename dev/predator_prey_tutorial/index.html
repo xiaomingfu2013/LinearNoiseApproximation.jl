@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Tutorial · LinearNoiseApproximation.jl</title><meta name="title" content="Tutorial · LinearNoiseApproximation.jl"/><meta property="og:title" content="Tutorial · LinearNoiseApproximation.jl"/><meta property="twitter:title" content="Tutorial · LinearNoiseApproximation.jl"/><meta name="description" content="Documentation for LinearNoiseApproximation.jl."/><meta property="og:description" content="Documentation for LinearNoiseApproximation.jl."/><meta property="twitter:description" content="Documentation for LinearNoiseApproximation.jl."/><meta property="og:url" content="https://xiaomingfu2013.github.io/LinearNoiseApproximation.jl/predator_prey_tutorial/"/><meta property="twitter:url" content="https://xiaomingfu2013.github.io/LinearNoiseApproximation.jl/predator_prey_tutorial/"/><link rel="canonical" href="https://xiaomingfu2013.github.io/LinearNoiseApproximation.jl/predator_prey_tutorial/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">LinearNoiseApproximation.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>Tutorial</a><ul class="internal"><li><a class="tocitem" href="#Define-the-Lotka-Volterra-model"><span>Define the Lotka-Volterra model</span></a></li><li><a class="tocitem" href="#Convert-the-model-to-a-JumpSystem-for-the-Gillespie-algorithm"><span>Convert the model to a JumpSystem for the Gillespie algorithm</span></a></li></ul></li><li><a class="tocitem" href="../api/">API</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Tutorial</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Tutorial</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/xiaomingfu2013/LinearNoiseApproximation.jl/blob/main/examples/predator_prey_tutorial.jl#" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Tutorial:-Using-LinearNoiseApproximation.jl-to-solve-a-Lotka-Volterra-model"><a class="docs-heading-anchor" href="#Tutorial:-Using-LinearNoiseApproximation.jl-to-solve-a-Lotka-Volterra-model">Tutorial: Using LinearNoiseApproximation.jl to solve a Lotka-Volterra model</a><a id="Tutorial:-Using-LinearNoiseApproximation.jl-to-solve-a-Lotka-Volterra-model-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorial:-Using-LinearNoiseApproximation.jl-to-solve-a-Lotka-Volterra-model" title="Permalink"></a></h1><p>This example demonstrates how to use <code>LinearNoiseApproximation.jl</code> package to solve a Lotka-Volterra model using the Linear Noise Approximation (LNA) and compare it to the stochastic trajectories obtained using the Gillespie algorithm.</p><pre><code class="language-julia hljs">using LinearNoiseApproximation
+using DifferentialEquations
+using Catalyst
+using JumpProcesses
+using Plots</code></pre><h2 id="Define-the-Lotka-Volterra-model"><a class="docs-heading-anchor" href="#Define-the-Lotka-Volterra-model">Define the Lotka-Volterra model</a><a id="Define-the-Lotka-Volterra-model-1"></a><a class="docs-heading-anchor-permalink" href="#Define-the-Lotka-Volterra-model" title="Permalink"></a></h2><p>The Lotka-Volterra model describes the dynamics of predator-prey interactions in an ecosystem. It assumes that the prey population <span>$U$</span> grows at a rate represented by the parameter <span>$\alpha$</span> in the absence of predators, but decreases as they are consumed by the predator population <span>$V$</span> at a rate determined by the interaction strength parameter, <span>$\beta$</span>. The predator population decreases in size if they cannot find enough prey to consume, which is represented by the mortality rate parameter, <span>$\delta$</span>. The corresponding ODE system reads</p><p class="math-container">\[\begin{equation}
+	\begin{aligned}
+		\frac{\mathrm{d}U}{\mathrm{d} t} &amp; = \alpha U - \beta U V,\\
+		\frac{\mathrm{d}V}{\mathrm{d} t} &amp; = \beta U V  - \delta V,
+	\end{aligned}\quad t\in (0, t_{\text{end}}).
+\end{equation}\]</p><pre><code class="language-julia hljs">rn = @reaction_network begin
+    @parameters α β δ
+    @species U(t) V(t)
+    α, U --&gt; 2*U
+    β, U + V --&gt; 2*V
+    δ, V --&gt; 0
+end</code></pre><p class="math-container">\[ \begin{align*}
+\mathrm{U} &amp;\xrightarrow{\alpha} 2 \mathrm{U} \\
+\mathrm{U} + \mathrm{V} &amp;\xrightarrow{\beta} 2 \mathrm{V} \\
+\mathrm{V} &amp;\xrightarrow{\delta} \varnothing  
+ \end{align*}
+ \]</p><h2 id="Convert-the-model-to-a-JumpSystem-for-the-Gillespie-algorithm"><a class="docs-heading-anchor" href="#Convert-the-model-to-a-JumpSystem-for-the-Gillespie-algorithm">Convert the model to a JumpSystem for the Gillespie algorithm</a><a id="Convert-the-model-to-a-JumpSystem-for-the-Gillespie-algorithm-1"></a><a class="docs-heading-anchor-permalink" href="#Convert-the-model-to-a-JumpSystem-for-the-Gillespie-algorithm" title="Permalink"></a></h2><p>Using <code>Catalyst.jl</code> we can convert <code>ReactionSystem</code> to a <code>JumpSystem</code> which can be used to simulate the stochastic trajectories using the Gillespie algorithm.</p><pre><code class="language-julia hljs">jumpsys = convert(JumpSystem, rn)
+
+#define the initial conditions, parameters, and time span
+u0 = [120.0, 140.0]
+ps = [0.8, 0.005, 0.4]
+duration = 30.0
+tspan = (0.0, duration)
+
+#solve the model using the Gillespie algorithm
+dprob = DiscreteProblem(jumpsys, u0, tspan, ps)
+jprob = JumpProblem(jumpsys, dprob, Direct(), save_positions=(false, false))
+jsol = solve(jprob, SSAStepper(), saveat=0.5, seed=2)
+
+# solve the model using the Linear Noise Approximation (LNA)
+lna = LNASystem(rn)
+alg = Vern7()
+prob = ODEProblem(lna, u0, tspan, ps)
+sol = solve(prob, alg, saveat=0.5, seed=2)
+
+#find the indices of the mean and variance states
+mean_idxs, var_idxs = find_states_cov_number([1, 2], lna)
+
+
+#plot the results
+plt = Plots.plot(; size=(800, 350))
+color_palette=[&quot;#1f78b4&quot; &quot;#ff7f00&quot;]
+label = [&quot;U&quot; &quot;V&quot;]
+
+for (i, (mean_idx, var_idx)) in enumerate(zip(mean_idxs, var_idxs))
+    mean = sol[mean_idx, :]
+    var = sol[var_idx, :]
+
+    Plots.plot!(
+        jsol.t,
+        jsol[mean_idx, :];
+        label=string(&quot;SSA: &quot;, label[i]),
+        xlabel=&quot;Time&quot;,
+        ylabel=&quot;Numbers&quot;,
+        color=color_palette[i],
+        legend=:topleft,
+        st=:scatter,
+        alpha=0.8,
+        left_margin=5Plots.mm,
+        bottom_margin=5Plots.mm,
+        markerstrokewidth=0,
+        xlim=(0, duration + 1),
+        xticks=0:5:duration + 1,
+    )
+    Plots.plot!(
+        sol.t,
+        mean;
+        label=string(&quot;LNA: &quot;, label[i]),
+        ribbon=sqrt.(var),
+        ribbonalpha=0.3,
+        color=color_palette[i],
+        lw=5,
+        xlim=(0, duration + 1),
+    )
+end
+plt</code></pre><img src="17593e40.svg" alt="Example block output"/><p>save the plot Plots.savefig(plt, &quot;predator<em>prey</em>fig.png&quot;)</p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../api/">API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="auto">Automatic (OS)</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.2.1 on <span class="colophon-date" title="Friday 2 February 2024 10:56">Friday 2 February 2024</span>. Using Julia version 1.10.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
