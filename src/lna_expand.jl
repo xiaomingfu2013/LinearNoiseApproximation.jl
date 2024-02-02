@@ -56,7 +56,7 @@ function LNASystem(rn::ReactionSystem; combinatoric_ratelaws=false, kwargs...)
     return LNA
 end
 
-function _get_LNA_system(rn; combinatoric_ratelaws=false, name=:LNA, kwargs...)
+function _get_LNA_system(rn; combinatoric_ratelaws=false, name=Symbol(string(:LNA_, rn.name)), kwargs...)
     ratesys = convert(ODESystem, rn; kwargs...)
 
     N = numspecies(rn)
@@ -75,6 +75,10 @@ function _get_LNA_system(rn; combinatoric_ratelaws=false, name=:LNA, kwargs...)
         connected_eqs, t, [states(ratesys); unique(Σ)], parameters(ratesys); name=name, kwargs...
     )
     return LNASystem(rn, LNA, kwargs)
+end
+
+function Base.show(io::IO, mime::MIME"text/plain", lna::LNASystem)
+    Base.show(io, mime, lna.odesys)
 end
 
 function construct_Σ(N::Int)
@@ -115,7 +119,12 @@ function get_replacemap_rates(rn, rates::Vector{Pair{Num,T}}) where {T<:Real}
 end
 
 function DiffEqBase.ODEProblem(expsys::LNASystem, u0, args...; kwargs...)
-    @assert length(u0) == numspecies(expsys.rn) "the length of u0 must be equal to the number of species in the ReactionSystem"
-    u0_expanded = expand_initial_conditions(expsys, u0)
+    if length(u0) == numspecies(expsys.rn)
+       u0_expanded = expand_initial_conditions(expsys, u0)
+    elseif length(u0) == numspecies(expsys)
+        u0_expanded = u0
+    else
+        error("the length of u0 must be equal to the number of species in the ReactionSystem or to the number of species in the LNA system")
+    end
     return DiffEqBase.ODEProblem(getfield(expsys, :odesys), u0_expanded, args...; kwargs...)
 end

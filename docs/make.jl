@@ -19,7 +19,7 @@ makedocs(;
         edit_link="main",
         assets=String[],
     ),
-    pages=["Home" => "index.md", "API" => "api.md"],
+    pages=["Home" => "index.md", "Tutorial" =>"tutorial.md", "API" => "api.md"],
     warnonly=true,
 )
 

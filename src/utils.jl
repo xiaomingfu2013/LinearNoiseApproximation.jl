@@ -24,6 +24,17 @@ function find_states_cov_number(num::Int, lna_sys::LNASystem)
     return num, findfirst(isequal(symb), lna_sys.odesys.states)
 end
 
+function find_states_cov_number(num::Vector{Int}, lna_sys::LNASystem)
+    mean_idxs = Int[]
+    var_idxs = Int[]
+    for i in num
+        mean_idx, var_idx = find_states_cov_number(i, lna_sys)
+        push!(mean_idxs, mean_idx)
+        push!(var_idxs, var_idx)
+    end
+    return mean_idxs, var_idxs
+end
+
 
 numspecies(expsys::LNASystem) = length(states(expsys.odesys))
 species(expsys::LNASystem) = states(expsys.odesys)
