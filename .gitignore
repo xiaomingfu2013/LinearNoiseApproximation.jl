@@ -7,3 +7,4 @@ Manifest.toml
 test/Manifest.toml
 .vscode
 examples/others
+docs/joss
