@@ -72,7 +72,7 @@ rates = [v0=>4.0,v1=>10.0,d0=>1.0,d1=>1.0,Ω=>5.0]
 tspan = (0.0, 20.0)
 u0 =[0, 0] # initial condition for M and P
 prob = ODEProblem(LNAsys, u0, tspan, rates)
-sol = solve(prob,Vern7(),abstol=1e-7, saveat =1.0)
+sol = solve(prob,Vern7(),abstol=1e-7, saveat=1.0)
 ```
 
 A complete working version of this example is in the `examples` folder.
