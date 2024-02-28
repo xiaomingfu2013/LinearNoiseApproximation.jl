@@ -1,20 +1,49 @@
-# LinearNoiseApproximation
+# LinearNoiseApproximation.jl
 
 [![Build Status](https://github.com/xiaomingfu2013/LinearNoiseApproximation.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/xiaomingfu2013/LinearNoiseApproximation.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![doc dev badge](https://img.shields.io/badge/docs-dev-blue.svg)](https://xiaomingfu2013.github.io/LinearNoiseApproximation.jl/dev/)
 
+ 
+## Purpose
+
+This package provides a numerical method to automatically deriving the linear
+noise approximation (LNA) for a given stochastic reaction network (SRN) using
+[Catalyst.jl](https://github.com/SciML/Catalyst.jl). SRNs have proven their
+flexibility beyond chemical systems and across many different fields. These
+include biochemistry with gene expression models, epidemiology with
+compartmental models, ecology with the Lotka-Volterra equations, condensed
+matter and semiconductor physics with diffusion processes, and even sociology.
+The derived expanded system can be solved using
+[DifferentialEquations.jl](https://github.com/JuliaDiffEq/DifferentialEquations.jl).
+
+
 ## Installation
+LinearNoiseApproximation.jl can be installed using following commands inside
+the Julia REPL
+
 ```julia
 using Pkg
 Pkg.add("LinearNoiseApproximation")
+```
+
+It can then be used with
+
+```julia
 using LinearNoiseApproximation
 ```
-This package provides a numerical method of applying linear noise approximation (LNA) to a given reaction system using [Catalyst](https://github.com/SciML/Catalyst.jl). The derived expanded system can be solved using [DifferentialEquations.jl](https://github.com/JuliaDiffEq/DifferentialEquations.jl).
+
 
 ## Usage
+
+While LNA has applications in many different fields, it was first derived as a
+moment-based approximation method for stochastic chemical kinetics. For
+brevity and historical consistency, we will therefore stick to the naming
+conventions from this field.
+
 ### Reaction network with system size Ω
 
-Suppose we have a reaction network
+Suppose we have a reaction network, defined with
+[Catalyst.jl](https://github.com/SciML/Catalyst.jl)
 
 ```julia
 rn = @reaction_network TwoStage begin
@@ -26,11 +55,17 @@ rn = @reaction_network TwoStage begin
     d1, P --> ∅
 end
 ```
-Here the system size `Ω` is integrated in the system (propensities), you can simply obtain the LNA system by calling
+
+Here the system size `Ω` is integrated into the system (propensities).
+
+With LinearNoiseApproximation.jl, you can now simply obtain the LNA system by
+calling
+
 ```julia
 LNAsys = LNASystem(rn)
 ```
-then solving the LNA by
+This system can be solved with [DifferentialEquations.jl](https://github.com/JuliaDiffEq/DifferentialEquations.jl)
+
 ```julia
 @variables v0, v1, d0, d1, Ω
 rates = [v0=>4.0,v1=>10.0,d0=>1.0,d1=>1.0,Ω=>5.0]
@@ -39,63 +74,136 @@ u0 =[0, 0] # initial condition for M and P
 prob = ODEProblem(LNAsys, u0, tspan, rates)
 sol = solve(prob,Vern7(),abstol=1e-7, saveat =1.0)
 ```
+
+A complete working version of this example is in the `examples` folder.
+
+
 ## Brief introduction to linear noise approximation
-Linear noise approximation (LNA) is a moment-based approximation method for stochastic chemical kinetics [[1]](#1). A general chemical kinetics reaction can be described as follows: given a set of chemical species $X_{i}, i = 1, \ldots, N$, we define $R$ chemical reactions by the notation
+
+LNA is a moment-based approximation method for stochastic chemical kinetics
+[[1]](#1). A general chemical kinetics reaction can be described as follows:
+given a set of chemical species $X_{i}, i = 1, \ldots, N$, we define $R$
+chemical reactions by the notation
+
 ```math
 \begin{equation}
-        k_r:\sum_{i=1}^{N}s_{ir}X_{i} \rightarrow \sum_{i=1}^{N}s'_{ir}X_{i}, \tag{1}
+        k_r:\sum_{i=1}^{N}s_{ir}X_{i} \rightarrow
+        \sum_{i=1}^{N}s'_{ir}X_{i}, \tag{1}
 \end{equation}
 ```
-where the stoichiometric coefficients $s_{ir}$ and $s'_{ir}$ are non-negative integer numbers denoting the numbers of reactant and product molecules, respectively. The quantity $k_r$ in Equation (1) is called the reaction rate constant of the $r$-th reaction. Classically, the dynamics of a chemical reaction system as in Equation (1) is modelled by the law of mass action. The law of mass action states that the rate of a reaction is proportional to the product of the concentrations of reactant molecules, which lead to the following rate equations as:
+
+where the stoichiometric coefficients $s_{ir}$ and $s'_{ir}$ are non-negative
+integer numbers denoting the numbers of reactant and product molecules,
+respectively. The quantity $k_r$ in Equation (1) is called the reaction rate
+constant of the $r$-th reaction. Classically, the dynamics of a chemical
+reaction system as in Equation (1) is modelled by the law of mass action. The
+law of mass action states that the rate of a reaction is proportional to the
+product of the concentrations of reactant molecules, which lead to the
+following rate equations as:
+
 ```math
 \begin{equation}
-    \frac{\mathrm{d}}{\mathrm{dt}} \phi_i = \sum_{r=1}^{R} S_{ir} g_r(\boldsymbol{\phi}), \tag{2}
+    \frac{\mathrm{d}}{\mathrm{dt}} \phi_i =
+    \sum_{r=1}^{R} S_{ir} g_r(\boldsymbol{\phi}), \tag{2}
 \end{equation}
 ```
+
 where $\phi_i$ is the concentration of species $X_i$, 
+
 ```math
-\boldsymbol{S} = \{S_{ir}\}_{N\times R},\; S_{ir}=s'_{ir} - s_{ir},\; i=1,\ldots,N,\; r=1,\ldots,R \notag
+\boldsymbol{S} = \{S_{ir}\}_{N\times R},\;
+S_{ir}=s'_{ir} - s_{ir},\;
+i=1,\ldots,N,\; r=1,\ldots,R \notag
 ```
+
 is the stoichiometric matrix, and 
+
 ```math
 g_r(\boldsymbol{\phi}) = k_r \prod_{i=1}^{N} \phi_i^{s_{ir}}, 
 ```
+
 is the rate of the $r$-th reaction. 
 
-However, the law of mass action is only valid when the number of molecules is large. When the number of molecules is small, System (1) can instead be modelled by a continuous-time Markov jump process to study the probability of the system being in a particular state at a given time. The dynamics of such a system can be described by the chemical master equation (CME) [[2]](#2):
+However, the law of mass action is only valid when the number of molecules is
+large. When the number of molecules is small, System (1) can instead be
+modelled by a continuous-time Markov jump process to study the probability of
+the system being in a particular state at a given time. The dynamics of such a
+system can be described by the chemical master equation (CME) [[2]](#2):
+
 ```math
 \begin{equation}
     \begin{aligned}
-        \frac{\mathrm{d}}{\mathrm{dt}} P(\boldsymbol{n}, t) = \sum_{r=1}^{R} f_r(\boldsymbol{n} - \mathbf{S}_r, t) P(\boldsymbol{n} - \mathbf{S}_r, t) - \sum_{r=1}^{R} f_r(\boldsymbol{n}, t) P(\boldsymbol{n}, t), \notag
+        \frac{\mathrm{d}}{\mathrm{dt}} P(\boldsymbol{n}, t) =
+        \sum_{r=1}^{R} f_r(\boldsymbol{n} -
+        \mathbf{S}_r, t) P(\boldsymbol{n} -
+        \mathbf{S}_r, t) -
+        \sum_{r=1}^{R} f_r(\boldsymbol{n}, t) P(\boldsymbol{n}, t), \notag
     \end{aligned}
 \end{equation}
 ```
-where $P(\boldsymbol{n}, t)$ is the probability of the system being in state $\boldsymbol{n}$ at time $t$, 
-```math
-f_r(\boldsymbol{n}, t) = k_r\Omega \prod_{i=1}^{N} \frac{n_i!}{(n_i-s_{ir})!\Omega^{s_{ir}}} 
-```
-is the propensity function of reaction $r$ at state $\boldsymbol{n}$, and $\mathbf{S}_r$ is the stoichiometric vector of reaction $r$, $\Omega$ is the system size (or volume of the system).
 
-The chemical master equation is written directly from the rate constants and stoichiometries of all the elementary reactions of a chemical system, but neither analytical nor numerical solutions are in general available. Fortunately, the chemical master equation can often be simplified in a linear noise approximation. Linear noise approximation is an expansion of the CME taking the inverse system size $1/\Omega$ as the perturbed variable, which is originally developed by [[3]](#3). The idea is to separate concentrations into a deterministic part, given by the solution of the deterministic rate equations, and a part describing the fluctuations about the deterministic mean
+where $P(\boldsymbol{n}, t)$ is the probability of the system being in state
+$\boldsymbol{n}$ at time $t$, 
+
+```math
+f_r(\boldsymbol{n}, t) =
+k_r\Omega \prod_{i=1}^{N} \frac{n_i!}{(n_i-s_{ir})!\Omega^{s_{ir}}} 
+```
+
+is the propensity function of reaction $r$ at state $\boldsymbol{n}$, and
+$\mathbf{S}_r$ is the stoichiometric vector of reaction $r$, $\Omega$ is the
+system size (or volume of the system).
+
+The chemical master equation is written directly from the rate constants and
+stoichiometries of all the elementary reactions of a chemical system, but
+neither analytical nor numerical solutions are in general available.
+Fortunately, the chemical master equation can often be simplified in a linear
+noise approximation. Linear noise approximation is an expansion of the CME
+taking the inverse system size $1/\Omega$ as the perturbed variable, which is
+originally developed by [[3]](#3). The idea is to separate concentrations into
+a deterministic part, given by the solution of the deterministic rate
+equations, and a part describing the fluctuations about the deterministic mean
+
 ```math
 \frac{n_i}{\Omega} = \phi_i  + \Omega^{-1/2} \epsilon_i,
 ```
-where $\phi_i$ is the solution of the deterministic rate equations (2), and $\epsilon_i$ represents fluctuations about the deterministic mean. Define $\boldsymbol{\Sigma}=\left(\epsilon_{ij}\right)_{N\times N}$ to be the covariance matrix of the fluctuations, the linear noise approximation is given by:
+
+where $\phi_i$ is the solution of the deterministic rate equations (2), and
+$\epsilon_i$ represents fluctuations about the deterministic mean. Define
+$\boldsymbol{\Sigma}=\left(\epsilon_{ij}\right)_{N\times N}$ to be the
+covariance matrix of the fluctuations, the linear noise approximation is given
+by:
+
 ```math
 \begin{equation}
-    \partial_t \boldsymbol{\Sigma} = \mathbf{A} \boldsymbol{\Sigma} + \boldsymbol{\Sigma} \mathbf{A}^T +  \Omega^{-1} \mathbf{B}, \tag{3}
+    \partial_t \boldsymbol{\Sigma} =
+    \mathbf{A} \boldsymbol{\Sigma} +
+    \boldsymbol{\Sigma} \mathbf{A}^T +
+    \Omega^{-1} \mathbf{B}, \tag{3}
 \end{equation}
 ```
-where $\mathbf{A}=\mathbf{A}(\boldsymbol{\phi}),\, \mathbf{B}=\mathbf{B}(\boldsymbol{\phi})$ both depend on the solution $\boldsymbol{\phi}$ of the rate equation \eqref{eq:rate_equations}, which are defined by 
+
+where $\mathbf{A}=\mathbf{A}(\boldsymbol{\phi}),\,
+\mathbf{B}=\mathbf{B}(\boldsymbol{\phi})$ both depend on the solution
+$\boldsymbol{\phi}$ of the rate equation \eqref{eq:rate_equations}, which are
+defined by 
+
 ```math
- \mathbf{A} = \left(A_{ij}\right)_{N\times N}, A_{ij}=\sum_{r=1}^{R} S_{ir}\partial_{\phi_j}g_r(\boldsymbol{\phi}),
-```
-as the Jacobian matrix of the deterministic rate equations, and 
-```math
-\mathbf{B} =\left(B_{ij}\right)_{N\times N}, B_{ij} = \sum_{r=1}^{R} S_{ir}S_{jr}g_r(\boldsymbol{\phi}).
+ \mathbf{A} = \left(A_{ij}\right)_{N\times N},
+ A_{ij}=\sum_{r=1}^{R} S_{ir}\partial_{\phi_j}g_r(\boldsymbol{\phi}),
 ```
 
-In this formulation, the LNA allows for analytical solutions that are locally valid close to macroscopic trajectories (solution of the rate equations) of the system. We refer to the review paper [[2]](#2) for more details on the CME and LNA.
+as the Jacobian matrix of the deterministic rate equations, and 
+
+```math
+\mathbf{B} =\left(B_{ij}\right)_{N\times N}, B_{ij} =
+\sum_{r=1}^{R} S_{ir}S_{jr}g_r(\boldsymbol{\phi}).
+```
+
+In this formulation, the LNA allows for analytical solutions that are locally
+valid close to macroscopic trajectories (solution of the rate equations) of
+the system. We refer to the review paper [[2]](#2) for more details on the CME
+and LNA.
 
 ## References
 <a id="1">[1]</a> Nicolaas Godfried van Kampen. The Expansion of the Master Equation. John Wiley & Sons, Inc., 2007. 
