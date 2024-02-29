@@ -1,7 +1,7 @@
 name = "LinearNoiseApproximation"
 uuid = "9859b720-004f-4db5-b836-c34ec215a307"
-authors = ["Xiaoming Fu"]
-version = "0.1.1"
+authors = ["Xiaoming Fu, Lennart Schüler"]
+version = "1.0.0"
 
 [deps]
 Catalyst = "479239e8-5488-4da2-87a7-35f2df7eef83"

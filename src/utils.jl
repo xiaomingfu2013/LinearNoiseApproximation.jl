@@ -35,7 +35,6 @@ function find_states_cov_number(num::Vector{Int}, lna_sys::LNASystem)
     return mean_idxs, var_idxs
 end
 
-
 numspecies(expsys::LNASystem) = length(states(expsys.odesys))
 species(expsys::LNASystem) = states(expsys.odesys)
 function to_timedependent_symbol(symbol::Symbol, vec::Vector)

@@ -82,7 +82,6 @@ function Base.show(io::IO, mime::MIME"text/plain", lna::LNASystem)
 end
 
 function construct_Σ(N::Int)
-    @variables t
     Σ = Matrix{Num}(undef, N, N)
     for j in 1:N, i in 1:j
         Σ[i, j] = to_timedependent_symbol(:Σ, [i, j])
